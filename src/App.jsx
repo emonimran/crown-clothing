@@ -1,11 +1,15 @@
 import "./App.css";
-import Categories from "./components/categories/categories.component";
+import { Route, Routes } from "react-router-dom";
+import Home from "./routes/home/home.component";
+import Navigation from "./components/navigation/navigation.component";
 
 function App() {
   return (
-    <>
-      <Categories />
-    </>
+    <Routes>
+      <Route path="/" element={<Navigation />}>
+        <Route index={true} element={<Home />} />
+      </Route>
+    </Routes>
   );
 }
 
