@@ -1,6 +1,13 @@
 import React from "react";
 import { useState } from "react";
 
+import FormInput from "../form-input/form-input.component";
+
+import {
+  createAuthUserWithEmailAndPassword,
+  createUserDocumentFromAuth,
+} from "../../utils/firebase/firebase.utils";
+
 const defaultFormFields = {
   displayName: "",
   email: "",
@@ -13,6 +20,30 @@ const SignUpForm = () => {
 
   const { displayName, email, password, confirmPassword } = formFields;
 
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    if (password !== confirmPassword) {
+      alert("Password does not match");
+      return;
+    }
+
+    try {
+      const { user } = await createAuthUserWithEmailAndPassword(
+        email,
+        password
+      );
+      await createUserDocumentFromAuth(user, { displayName });
+      setFormFields(defaultFormFields);
+    } catch (error) {
+      if (error.code === "auth/email-already-in-use") {
+        alert("Cannot create user, email already in use");
+      } else {
+        console.log("User creation encountered an error", error);
+      }
+    }
+  };
+
   const handleChange = (event) => {
     const { name, value } = event.target;
     setFormFields({ ...formFields, [name]: value });
@@ -21,9 +52,9 @@ const SignUpForm = () => {
   return (
     <div>
       <h1>Sign up with your email and password</h1>
-      <form action="" onSubmit={() => {}}>
-        <label htmlFor="">Display Name</label>
-        <input
+      <form action="" onSubmit={handleSubmit}>
+        <FormInput
+          label="Display Name"
           type="text"
           name="displayName"
           value={displayName}
@@ -31,8 +62,8 @@ const SignUpForm = () => {
           onChange={handleChange}
         />
 
-        <label htmlFor="">Email</label>
-        <input
+        <FormInput
+          label="Email"
           type="email"
           name="email"
           value={email}
@@ -40,8 +71,8 @@ const SignUpForm = () => {
           onChange={handleChange}
         />
 
-        <label htmlFor="">Password</label>
-        <input
+        <FormInput
+          label="Password"
           type="password"
           name="password"
           value={password}
@@ -49,8 +80,8 @@ const SignUpForm = () => {
           onChange={handleChange}
         />
 
-        <label htmlFor="">Confirm Password</label>
-        <input
+        <FormInput
+          label="confirmPassword"
           type="password"
           name="confirmPassword"
           value={confirmPassword}
