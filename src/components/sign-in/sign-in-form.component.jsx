@@ -3,7 +3,7 @@ import { useState } from "react";
 
 import FormInput from "../form-input/form-input.component";
 
-import "./sign-up-form.styles.scss";
+import "./sign-in-form.styles.scss";
 
 import {
   createAuthUserWithEmailAndPassword,
